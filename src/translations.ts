@@ -73,22 +73,22 @@
 <context>
     <name>qtsparkle::Updater</name>
     <message>
-        <location filename="updater.cpp" line="163"/>
+        <location filename="updater.cpp" line="164"/>
         <source>Check for updates automatically?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updater.cpp" line="164"/>
+        <location filename="updater.cpp" line="165"/>
         <source>Should %1 automatically check for updates?  You can always check for updates manually from the menu.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updater.cpp" line="166"/>
+        <location filename="updater.cpp" line="167"/>
         <source>Check automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updater.cpp" line="167"/>
+        <location filename="updater.cpp" line="168"/>
         <source>Don&apos;t check</source>
         <translation type="unfinished"></translation>
     </message>

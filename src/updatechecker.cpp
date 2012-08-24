@@ -104,6 +104,14 @@ void UpdateChecker::Finished() {
 
   d->busy_ = false;
 
+  QVariant statusCode(reply->reply()->attribute(
+    QNetworkRequest::HttpStatusCodeAttribute));
+
+  if (!statusCode.isValid() || statusCode.toInt() != 200) {
+    emit CheckFailed(QString("Server responded with status code %1").arg(statusCode.toInt()));
+    return;
+  }
+
   AppCastPtr appcast(new AppCast);
   bool success = appcast->Load(reply->reply());
   if (!success) {
