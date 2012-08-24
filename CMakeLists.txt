@@ -9,5 +9,7 @@ include(${QT_USE_FILE})
 SET(CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -Wall")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
 
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Produce a .dll or .so")
+
 add_subdirectory(src)
 add_subdirectory(exampleapp)
