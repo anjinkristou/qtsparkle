@@ -49,6 +49,8 @@ public slots:
   void UpdateAvailable(AppCastPtr appcast);
   void UpToDate();
   void CheckFailed(const QString& reason);
+  void Download();
+  void Extract(QString const &downloaded_file);
 
 private:
   struct Private;

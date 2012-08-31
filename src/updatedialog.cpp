@@ -63,7 +63,7 @@ UpdateDialog::UpdateDialog(QWidget *parent)
 
   connect(d->ui_->install, SIGNAL(clicked()), SLOT(Install()));
   connect(d->ui_->skip, SIGNAL(clicked()), SLOT(Skip()));
-  connect(d->ui_->later, SIGNAL(clicked()), SLOT(close()));
+  connect(d->ui_->later, SIGNAL(clicked()), SLOT(reject()));
 }
 
 UpdateDialog::~UpdateDialog() {
@@ -123,8 +123,7 @@ void UpdateDialog::Install() {
   if (!d->appcast_)
     return;
 
-  QDesktopServices::openUrl(d->appcast_->download_url());
-  close();
+  accept();
 }
 
 void UpdateDialog::Skip() {
@@ -134,7 +133,7 @@ void UpdateDialog::Skip() {
   QSettings s;
   s.beginGroup(kSettingsGroup);
   s.setValue("skipped_version", d->appcast_->version());
-  close();
+  reject();
 }
 
 } // namespace qtsparkle

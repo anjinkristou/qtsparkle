@@ -22,6 +22,7 @@ set(SOURCES
   appcast.cpp
   common.cpp
   compareversions.cpp
+  downloader.cpp
   followredirects.cpp
   uicontroller.cpp
   updatechecker.cpp
@@ -30,6 +31,7 @@ set(SOURCES
 )
 
 set(MOC_SOURCES
+  downloader.h
   followredirects.h
   uicontroller.h
   updatechecker.h

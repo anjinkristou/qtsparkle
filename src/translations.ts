@@ -32,28 +32,49 @@
 <context>
     <name>qtsparkle::UiController</name>
     <message>
-        <location filename="uicontroller.cpp" line="79"/>
+        <location filename="uicontroller.cpp" line="95"/>
         <source>Checking for updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="80"/>
+        <location filename="uicontroller.cpp" line="96"/>
         <source>Checking for updates to %1, please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="107"/>
+        <location filename="uicontroller.cpp" line="127"/>
         <source>No updates available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="108"/>
+        <location filename="uicontroller.cpp" line="128"/>
         <source>You already have the latest version of %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="123"/>
+        <location filename="uicontroller.cpp" line="143"/>
         <source>Update check failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="uicontroller.cpp" line="168"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="uicontroller.cpp" line="169"/>
+        <source>Installing Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="uicontroller.cpp" line="194"/>
+        <source>Extracting %1â¦</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="uicontroller.cpp" line="170"/>
+        <source>Downloading %1 %2â¦</source>
+        <oldsource>Downloading Update</oldsource>
         <translation type="unfinished"></translation>
     </message>
 </context>

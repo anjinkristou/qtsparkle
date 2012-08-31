@@ -21,6 +21,7 @@
 */
 
 #include "appcast.h"
+#include "downloader.h"
 #include "uicontroller.h"
 #include "updatedialog.h"
 
@@ -33,6 +34,9 @@
 namespace qtsparkle {
 
 struct UiController::Private {
+
+  void initProgressDialog();
+
   bool quiet_;
   QWidget* parent_widget_;
 
@@ -42,7 +46,19 @@ struct UiController::Private {
 
   UpdateDialog* dialog_;
   QProgressDialog* progress_dialog_;
+
+  AppCastPtr appcast_;
 };
+
+void UiController::Private::initProgressDialog()
+{
+  if (progress_dialog_)
+    return;
+
+  progress_dialog_ = new QProgressDialog(parent_widget_);
+  progress_dialog_->setAutoClose(false);
+  progress_dialog_->setAutoReset(false);  
+}
 
 UiController::UiController(bool quiet, QObject* parent, QWidget* parent_widget)
   : QObject(parent),
@@ -54,6 +70,8 @@ UiController::UiController(bool quiet, QObject* parent, QWidget* parent_widget)
 }
 
 UiController::~UiController() {
+  qDebug() << "UiController was deleted";
+
   delete d->progress_dialog_;
 }
 
@@ -71,9 +89,7 @@ void UiController::SetVersion(const QString& version) {
 
 void UiController::CheckStarted() {
   if (!d->quiet_) {
-    d->progress_dialog_ = new QProgressDialog(d->parent_widget_);
-    d->progress_dialog_->setAutoClose(false);
-    d->progress_dialog_->setAutoReset(false);
+    d->initProgressDialog();
     d->progress_dialog_->setRange(0, 0);
     d->progress_dialog_->setCancelButton(NULL);
     d->progress_dialog_->setWindowTitle(tr("Checking for updates"));
@@ -88,6 +104,8 @@ void UiController::UpdateAvailable(AppCastPtr appcast) {
     d->progress_dialog_->hide();
   }
 
+  d->appcast_ = appcast;
+
   d->dialog_ = new UpdateDialog(d->parent_widget_);
   d->dialog_->setAttribute(Qt::WA_DeleteOnClose);
   d->dialog_->SetNetworkAccessManager(d->network_);
@@ -95,7 +113,9 @@ void UiController::UpdateAvailable(AppCastPtr appcast) {
   d->dialog_->SetVersion(d->version_);
   d->dialog_->ShowUpdate(appcast);
 
-  connect(d->dialog_, SIGNAL(destroyed()), SLOT(deleteLater()));
+  connect(d->dialog_, SIGNAL(accepted()), SLOT(Download()));
+
+  connect(d->dialog_, SIGNAL(rejected()), SLOT(deleteLater()));
 }
 
 void UiController::UpToDate() {
@@ -125,6 +145,56 @@ void UiController::CheckFailed(const QString& reason) {
   }
 
   deleteLater();
+}
+
+void UiController::Download()
+{
+  Downloader *downloader = new Downloader(d->appcast_);
+  downloader->setNetworkAccessManager(d->network_);
+
+  connect(downloader, SIGNAL(downloadFinished(QString const &)),
+    SLOT(Extract(QString const &)));
+
+  // Todo: handle failures.
+
+  // Downloader is single use. Let it clean itself up after finishing/failing.
+  connect(downloader, SIGNAL(downloadEnded()),
+    downloader, SLOT(deleteLater()));
+
+  // Progress dialog stuff
+  d->initProgressDialog();
+  d->progress_dialog_->setRange(0, 100);
+  d->progress_dialog_->setValue(0);
+  d->progress_dialog_->setCancelButtonText(tr("Cancel"));
+  d->progress_dialog_->setWindowTitle(tr("Installing Update"));
+  d->progress_dialog_->setLabelText(tr("Downloading %1 %2…")
+    .arg(qApp->applicationName()).arg(d->appcast_->version()));
+  d->progress_dialog_->show();
+
+  // Connect cancel button
+  connect(d->progress_dialog_, SIGNAL(canceled()),
+    downloader, SLOT(cancel()));
+
+  // Connect progress updates
+  connect(downloader, SIGNAL(downloadProgress(int)),
+    d->progress_dialog_, SLOT(setValue(int)));
+
+  downloader->start();
+}
+
+void UiController::Extract(QString const &download)
+{
+  // Indeterminate mode
+  d->progress_dialog_->setRange(0, 0);
+  d->progress_dialog_->setValue(0);
+
+  // Disable Cancel button (as that is not supported for now)
+  d->progress_dialog_->setCancelButton(0);
+
+  d->progress_dialog_->setLabelText(tr("Extracting %1…")
+    .arg(download)); // Todo: only show basename.
+
+  qDebug() << "Start extracting" << download;
 }
 
 } // namespace qtsparkle
