@@ -26,6 +26,7 @@
 #include "updatedialog.h"
 
 #include <QCoreApplication>
+#include <QFileInfo>
 #include <QIcon>
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -167,7 +168,7 @@ void UiController::Download()
   d->progress_dialog_->setValue(0);
   d->progress_dialog_->setCancelButtonText(tr("Cancel"));
   d->progress_dialog_->setWindowTitle(tr("Installing Update"));
-  d->progress_dialog_->setLabelText(tr("Downloading %1 %2…")
+  d->progress_dialog_->setLabelText(tr("Downloading %1 %2...")
     .arg(qApp->applicationName()).arg(d->appcast_->version()));
   d->progress_dialog_->show();
 
@@ -191,8 +192,8 @@ void UiController::Extract(QString const &download)
   // Disable Cancel button (as that is not supported for now)
   d->progress_dialog_->setCancelButton(0);
 
-  d->progress_dialog_->setLabelText(tr("Extracting %1…")
-    .arg(download)); // Todo: only show basename.
+  d->progress_dialog_->setLabelText(tr("Extracting %1...")
+    .arg(QFileInfo(download).fileName()));
 
   qDebug() << "Start extracting" << download;
 }
