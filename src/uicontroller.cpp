@@ -181,6 +181,9 @@ void UiController::Download()
   connect(downloader, SIGNAL(downloadProgress(int)),
     d->progress_dialog_, SLOT(setValue(int)));
 
+  connect(downloader, SIGNAL(downloadFailed(QString const &)),
+    SLOT(showError(QString const &)));
+
   downloader->start();
 }
 
@@ -216,7 +219,7 @@ void UiController::Extract(QString const &download)
 
   // Disable Cancel button (as that is not supported for now)
   d->progress_dialog_->setCancelButtonText(
-    unarchiver->isCancelable() ? tr("Cancel") : "");
+    unarchiver->isCancelable() ? tr("Cancel") : QString());
 
   d->progress_dialog_->setLabelText(tr("Extracting %1...")
     .arg(QFileInfo(download).fileName()));
