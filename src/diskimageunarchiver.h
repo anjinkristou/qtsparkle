@@ -15,6 +15,7 @@ class DiskImageUnarchiver : public Unarchiver
 
 public:
 	DiskImageUnarchiver(QString const &diskImage);
+	virtual ~DiskImageUnarchiver();
 
 protected:
 	virtual void _start();
@@ -24,7 +25,6 @@ protected:
 private slots:
 	void processFinished(int, QProcess::ExitStatus);
 	void processError(QProcess::ProcessError);
-	void aboutToBeDestroyed();
 
 private:
 	void mountDMG();

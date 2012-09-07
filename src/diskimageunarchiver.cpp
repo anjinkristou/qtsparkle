@@ -13,8 +13,13 @@ DiskImageUnarchiver::DiskImageUnarchiver(QString const &diskImage)
 	d_mountPoint(getMountPoint()),
 	d_isMounted(false)
 {
-	connect(this, SIGNAL(destroyed()),
-		SLOT(aboutToBeDestroyed()));
+	//
+}
+
+DiskImageUnarchiver::~DiskImageUnarchiver()
+{
+	if (d_isMounted)
+		ejectDMG();
 }
 
 void DiskImageUnarchiver::_start()
@@ -75,28 +80,31 @@ void DiskImageUnarchiver::ejectDMG()
 
 void DiskImageUnarchiver::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-	if (exitCode != 0)
+	if (exitCode == 0)
 	{
-		emit failed(d_process->readAll());
+		d_isMounted = true;
 
-		emit ended();
+		QString bundlePath(findBundle(d_mountPoint));
 
-		return;
+		if (bundlePath.isEmpty())
+		{
+			ejectDMG();
+			emit failed("Could not find the application bundle in mounted disk image");
+		}
+		else
+			emit finished(bundlePath);
 	}
-
-	d_isMounted = true;
-
-	QString bundlePath(findBundle(d_mountPoint));
-
-	if (bundlePath.isEmpty())
-		emit failed("Could not find the application bundle in mounted disk image");
 	else
-		emit finished(bundlePath);
+		emit failed(QString("Could not mount disk image: %1")
+			.arg(QString(d_process->readAll())));
+
+	emit ended();
 }
 
 void DiskImageUnarchiver::processError(QProcess::ProcessError error)
 {
-	emit failed(d_process->errorString());
+	emit failed(QString("Could not run mount disk image command: %1")
+		.arg(d_process->errorString()));
 
 	emit ended();
 }
@@ -116,13 +124,7 @@ bool DiskImageUnarchiver::isApplicationBundle(QFileInfo const &bundle)
 {
 	// Todo: compare bundle identifier in plist with the one of our
 	// own application bundle.
-	return bundle.isBundle();
-}
-
-void DiskImageUnarchiver::aboutToBeDestroyed()
-{
-	if (d_isMounted)
-		ejectDMG();
+	return bundle.suffix() == "app";
 }
 
 }
