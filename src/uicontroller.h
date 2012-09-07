@@ -51,6 +51,11 @@ public slots:
   void CheckFailed(const QString& reason);
   void Download();
   void Extract(QString const &downloaded_file);
+  void Install(QString const &extracted_file);
+  void showError(QString const &error);
+
+signals:
+  void installationEnded();
 
 private:
   struct Private;

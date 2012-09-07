@@ -22,18 +22,22 @@ set(SOURCES
   appcast.cpp
   common.cpp
   compareversions.cpp
+  diskimageunarchiver.cpp
   downloader.cpp
   followredirects.cpp
   uicontroller.cpp
+  unarchiver.cpp
   updatechecker.cpp
   updatedialog.cpp
   updater.cpp
 )
 
 set(MOC_SOURCES
+  diskimageunarchiver.h
   downloader.h
   followredirects.h
   uicontroller.h
+  unarchiver.h
   updatechecker.h
   updatedialog.h
   updater.h

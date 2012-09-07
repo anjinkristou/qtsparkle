@@ -21,6 +21,7 @@
 */
 
 #include "appcast.h"
+#include "unarchiver.h"
 #include "downloader.h"
 #include "uicontroller.h"
 #include "updatedialog.h"
@@ -185,17 +186,59 @@ void UiController::Download()
 
 void UiController::Extract(QString const &download)
 {
+  qDebug() << "Start extracting" << download;
+
+  Unarchiver *unarchiver = Unarchiver::build(download);
+
+  // Todo catch this case when we do not know how to
+  // unarchive the downloaded file.
+  if (unarchiver == 0)
+  {
+    qDebug() << "I can't extrat this?!";
+    return;
+  } 
+
+  connect(unarchiver, SIGNAL(finished(QString const &)),
+    SLOT(Install(QString const &)));
+
+  connect(unarchiver, SIGNAL(failed(QString const &)),
+    SLOT(showError(QString const &)));
+
+  connect(unarchiver, SIGNAL(ended()),
+    d->progress_dialog_, SLOT(accept()));
+
+  connect(this, SIGNAL(installationEnded()),
+    unarchiver, SLOT(deleteLater()));
+
   // Indeterminate mode
   d->progress_dialog_->setRange(0, 0);
   d->progress_dialog_->setValue(0);
 
   // Disable Cancel button (as that is not supported for now)
-  d->progress_dialog_->setCancelButton(0);
+  d->progress_dialog_->setCancelButtonText(
+    unarchiver->isCancelable() ? tr("Cancel") : "");
 
   d->progress_dialog_->setLabelText(tr("Extracting %1...")
     .arg(QFileInfo(download).fileName()));
 
-  qDebug() << "Start extracting" << download;
+  d->progress_dialog_->show();
+
+  unarchiver->start();
+}
+
+void UiController::Install(QString const &path)
+{
+  // Installer *installer = new BundleInstaller()
+  qDebug() << "Start installing " << path;
+
+  emit installationEnded();
+}
+
+void UiController::showError(QString const &error)
+{
+  QMessageBox::warning(d->parent_widget_,
+    tr("Updating failed"), error,
+    QMessageBox::Close, QMessageBox::NoButton);
 }
 
 } // namespace qtsparkle

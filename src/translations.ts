@@ -32,50 +32,54 @@
 <context>
     <name>qtsparkle::UiController</name>
     <message>
-        <location filename="uicontroller.cpp" line="96"/>
+        <location filename="uicontroller.cpp" line="97"/>
         <source>Checking for updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="97"/>
+        <location filename="uicontroller.cpp" line="98"/>
         <source>Checking for updates to %1, please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="128"/>
+        <location filename="uicontroller.cpp" line="129"/>
         <source>No updates available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="129"/>
+        <location filename="uicontroller.cpp" line="130"/>
         <source>You already have the latest version of %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="144"/>
+        <location filename="uicontroller.cpp" line="145"/>
         <source>Update check failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="169"/>
+        <location filename="uicontroller.cpp" line="170"/>
+        <location filename="uicontroller.cpp" line="219"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="170"/>
+        <location filename="uicontroller.cpp" line="171"/>
         <source>Installing Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="195"/>
-        <source>Extracting %1...</source>
-        <oldsource>Extracting %1â¦</oldsource>
+        <location filename="uicontroller.cpp" line="172"/>
+        <source>Downloading %1 %2...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="uicontroller.cpp" line="171"/>
-        <source>Downloading %1 %2...</source>
-        <oldsource>Downloading %1 %2â¦</oldsource>
+        <location filename="uicontroller.cpp" line="221"/>
+        <source>Extracting %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="uicontroller.cpp" line="240"/>
+        <source>Updating failed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
