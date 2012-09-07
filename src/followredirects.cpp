@@ -40,8 +40,7 @@ struct FollowRedirects::Private {
 FollowRedirects::FollowRedirects(QNetworkReply* reply)
   : d(new Private)
 {
-  d->reply_ = reply;
-  connect(reply, SIGNAL(finished()), SLOT(FinishedSlot()));
+  setNetworkReply(reply);
 }
 
 FollowRedirects::~FollowRedirects() {
@@ -83,12 +82,41 @@ void FollowRedirects::FinishedSlot() {
     req.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
         d->reply_->request().attribute(QNetworkRequest::CacheLoadControlAttribute));
 
-    d->reply_ = d->reply_->manager()->get(req);
-    connect(d->reply_, SIGNAL(finished()), SLOT(FinishedSlot()));
+    setNetworkReply(d->reply_->manager()->get(req));
+
     return;
   }
 
   emit Finished();
+}
+
+void FollowRedirects::setNetworkReply(QNetworkReply *reply)
+{
+  d->reply_ = reply;
+
+  connect(d->reply_, SIGNAL(finished()),
+    SLOT(FinishedSlot()));
+
+  connect(d->reply_, SIGNAL(downloadProgress(qint64, qint64)),
+    SLOT(proxyDownloadProgress(qint64, qint64)));
+
+  connect(d->reply_, SIGNAL(error(QNetworkReply::NetworkError)),
+    SLOT(proxyError(QNetworkReply::NetworkError)));
+}
+
+void FollowRedirects::proxyDownloadProgress(qint64 val, qint64 max)
+{
+  emit downloadProgress(val, max);
+}
+
+void FollowRedirects::proxyError(QNetworkReply::NetworkError errorCode)
+{
+  emit error(errorCode);
+}
+
+void FollowRedirects::abort()
+{
+  d->reply_->abort();
 }
 
 } // namespace qtsparkle

@@ -39,15 +39,24 @@ public:
   QNetworkReply* reply() const;
 
 signals:
+  // Todo: refactor this to finished, lower case, to match the 
+  // interface of qnetworkreply.
   void Finished();
   void RedirectLimitReached();
+  void downloadProgress(qint64, qint64);
+  void error(QNetworkReply::NetworkError);
+  
+public slots:
+  void abort();
 
 private slots:
   void FinishedSlot();
+  void proxyDownloadProgress(qint64, qint64);
+  void proxyError(QNetworkReply::NetworkError);
 
 private:
+  void setNetworkReply(QNetworkReply *);
   struct Private;
-  friend struct Private;
   QScopedPointer<Private> d;
 };
 

@@ -5,9 +5,10 @@
 
 class QFile;
 class QNetworkAccessManager;
-class QNetworkReply;
 
 namespace qtsparkle {
+
+class FollowRedirects;
 
 class Downloader : public QObject
 {
@@ -39,7 +40,7 @@ private:
 
 	AppCastPtr d_appcast;
 	QNetworkAccessManager *d_network;
-	QNetworkReply *d_reply;
+	FollowRedirects *d_reply;
 	
 };
 

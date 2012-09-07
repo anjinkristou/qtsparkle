@@ -1,5 +1,6 @@
 #include "appcast.h"
 #include "downloader.h"
+#include "followredirects.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -38,16 +39,18 @@ void Downloader::start()
 		d_network = new QNetworkAccessManager(this);
 
 	QNetworkRequest request(d_appcast->download_url());
-	d_reply = d_network->get(request);
+	d_reply = new FollowRedirects(d_network->get(request));
 
 	connect(d_reply, SIGNAL(downloadProgress(qint64, qint64)),
 		SLOT(replyProgress(qint64, qint64)));
 
-	connect(d_reply, SIGNAL(finished()),
-		SLOT(replyFinished()));
-
 	connect(d_reply, SIGNAL(error(QNetworkReply::NetworkError)),
 		SLOT(replyError()));
+
+	// todo: handle redirect limit reached.
+
+	connect(d_reply, SIGNAL(Finished()),
+		SLOT(replyFinished()));
 }
 
 void Downloader::cancel()
@@ -62,8 +65,6 @@ void Downloader::cancel()
 
 void Downloader::replyProgress(qint64 progress, qint64 maximum)
 {
-	qDebug() << "Downloader::replyProgress" << progress << maximum;
-
 	emit downloadProgress((progress * 100) / maximum);
 }
 
@@ -87,7 +88,7 @@ void Downloader::replyFinished()
 	}
 
 	// Todo: this does not guarantee everything is written.
-	file.write(d_reply->readAll());
+	file.write(d_reply->reply()->readAll());
 	file.close();
 
 	emit downloadFinished(path);
@@ -99,9 +100,9 @@ void Downloader::replyFinished()
 
 void Downloader::replyError()
 {
-	qDebug() << "Downloader::replyError:" << d_reply->errorString();
+	qDebug() << "Downloader::replyError:" << d_reply->reply()->errorString();
 
-	emit downloadFailed(d_reply->errorString());
+	emit downloadFailed(d_reply->reply()->errorString());
 
 	clean();
 }
